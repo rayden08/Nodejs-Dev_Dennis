@@ -8,7 +8,7 @@
   ],
   "routes": [
     {
-      "src": "/compare",
+      "src": "/api/(.*)",
       "dest": "app.js"
     },
     {
