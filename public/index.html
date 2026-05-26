@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Soal MVC App</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <h1 class="brand">Soal MVC App</h1>
+        <nav class="nav">
+          <span class="tag">Demo</span>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <section id="loginView" class="card">
+        <h2>Login</h2>
+        <div class="form-row">
+          <label for="username">Username</label>
+          <input id="username" value="admin" />
+        </div>
+        <div class="form-row">
+          <label for="password">Password</label>
+          <input id="password" type="password" value="secret123" />
+        </div>
+        <div class="form-actions">
+          <button id="loginBtn" class="btn primary">Login</button>
+          <div id="loginMsg" class="muted"></div>
+        </div>
+      </section>
+
+      <section id="appView" class="hidden">
+        <div class="row between">
+          <h2>Dashboard</h2>
+          <div>
+            <button id="logoutBtn" class="btn">Logout</button>
+          </div>
+        </div>
+
+        <section class="card">
+          <h3>CRUD Items</h3>
+          <div class="form-actions">
+            <button id="createItemBtn" class="btn primary">New Item</button>
+            <div class="muted">Use the form to create or edit items</div>
+          </div>
+          <div id="itemsList" class="list"></div>
+        </section>
+
+        <!-- Item modal -->
+        <div id="itemModal" class="modal-overlay hidden" aria-hidden="true">
+          <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <div class="modal-header">
+              <h3 id="modalTitle">New Item</h3>
+            </div>
+            <form id="itemForm">
+              <input type="hidden" id="itemId" />
+              <div class="form-row">
+                <label for="modalTitleInput">Title</label>
+                <input id="modalTitleInput" required />
+              </div>
+              <div class="form-row">
+                <label for="modalContentInput">Content</label>
+                <textarea id="modalContentInput"></textarea>
+              </div>
+              <div class="modal-actions">
+                <button type="submit" class="btn primary">Save</button>
+                <button type="button" id="modalCancel" class="btn">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <section class="card">
+          <h3>Compare Inputs</h3>
+          <div class="grid">
+            <div>
+              <label for="input1">Input 1</label>
+              <input id="input1" />
+            </div>
+            <div>
+              <label for="input2">Input 2</label>
+              <input id="input2" />
+            </div>
+            <div>
+              <label for="compareType">Type</label>
+              <select id="compareType"><option value="sensitive">sensitive</option><option value="non-sensitive">non-sensitive</option></select>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button id="compareBtn" class="btn primary">Compare</button>
+          </div>
+          <div id="compareResult" class="result"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+  </html>
