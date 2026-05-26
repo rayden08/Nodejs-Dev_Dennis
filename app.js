@@ -31,5 +31,9 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Tetap jalankan port untuk kebutuhan running / testing di lokal (localhost)
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
+// WAJIB UNTUK VERCEL: Mengeksport instance app Express agar dibaca sebagai Serverless Function
+module.exports = app;
