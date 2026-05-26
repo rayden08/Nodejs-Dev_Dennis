@@ -40,6 +40,54 @@
     setTimeout(() => t.remove(), time);
   }
 
+  function showConfirm(title, message, isDanger = false) {
+    return new Promise((resolve) => {
+      $("confirmTitle").innerText = title;
+      $("confirmMessage").innerText = message;
+      const yesBtn = $("confirmYes");
+      const noBtn = $("confirmNo");
+      
+      if (isDanger) {
+        yesBtn.className = 'btn danger-btn';
+      } else {
+        yesBtn.className = 'btn primary';
+      }
+      
+      const modal = $("confirmModal");
+      modal.classList.remove('hidden');
+      modal.setAttribute('aria-hidden', 'false');
+      
+      function onYes() {
+        cleanup();
+        resolve(true);
+      }
+      
+      function onNo() {
+        cleanup();
+        resolve(false);
+      }
+      
+      function onBackdrop(ev) {
+        if (ev.target.id === 'confirmModal') {
+          cleanup();
+          resolve(false);
+        }
+      }
+      
+      function cleanup() {
+        yesBtn.removeEventListener('click', onYes);
+        noBtn.removeEventListener('click', onNo);
+        modal.removeEventListener('click', onBackdrop);
+        modal.classList.add('hidden');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+      
+      yesBtn.addEventListener('click', onYes);
+      noBtn.addEventListener('click', onNo);
+      modal.addEventListener('click', onBackdrop);
+    });
+  }
+
   async function loadItems() {
     const r = await api('/api/items');
     if (!r.ok) { showToast('Failed to load items'); return; }
@@ -64,19 +112,15 @@
       const id = e.target.getAttribute('data-id');
       const action = e.target.getAttribute('data-action');
       if (action === 'delete') {
+        const confirmed = await showConfirm('Hapus Item', 'Apakah Anda yakin ingin menghapus item ini?', true);
+        if (!confirmed) return;
         await api('/api/items/' + id, { method: 'DELETE' });
         await loadItems();
         showToast('Item deleted');
       } else if (action === 'edit') {
         const r = await api('/api/items/' + id);
         if (!r.ok) return showToast('Failed to fetch item');
-        const itm = r.body;
-        const newTitle = prompt('Edit title', itm.title);
-        if (newTitle === null) return; // cancelled
-        const newContent = prompt('Edit content', itm.content || '') || '';
-        await api('/api/items/' + id, { method: 'PUT', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ title: newTitle, content: newContent }) });
-        await loadItems();
-        showToast('Item updated');
+        openItemModal(r.body);
       }
     }));
   }
@@ -113,6 +157,8 @@
     const content = $("modalContentInput").value.trim();
     if (!title) return showToast('Title is required');
     if (id) {
+      const confirmed = await showConfirm('Simpan Perubahan', 'Apakah Anda yakin ingin menyimpan perubahan pada item ini?');
+      if (!confirmed) return;
       await api('/api/items/' + id, { method: 'PUT', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ title, content }) });
       showToast('Item updated');
     } else {
